@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/app/lib/db";
-import jwt from "jsonwebtoken";
-import verifyToken from '../../middleware/middleware'
-
-
+import verifyToken from '../../middleware/middleware';
+import { ErrorMessages } from '../../response/errorMessages';
+import { handleError } from '../../response/errorHandler';
 
 export async function GET(req: Request) {
   try {
@@ -20,15 +19,6 @@ export async function GET(req: Request) {
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
-    // Error handling
-    if (error.message === "No token provided") {
-      return NextResponse.json({ error: "No token provided" }, { status: 401 });
-    } else if (error.name === "JsonWebTokenError") {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    } else if (error.name === "TokenExpiredError") {
-      return NextResponse.json({ error: "Token expired" }, { status: 401 });
-    }
-    console.error("Error fetching expenses:", error);
-    return NextResponse.json({ error: "Failed to fetch expenses" }, { status: 500 });
+    return handleError(error);  // Handle errors using the centralized error handler
   }
 }
