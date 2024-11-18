@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     const db = await connectToDatabase();
     const result = await db
       .collection("expenseList")
-      .find({ userId }, { projection: { amount: 1, description: 1 } }) // Fetch only required fields
+      .find({ userId }, { projection: { amount: 1, description: 1,created_at:1,type:1 } }) // Fetch only required fields
       .toArray();
 
     return NextResponse.json(result, { status: 200 });
